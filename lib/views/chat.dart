@@ -77,8 +77,8 @@ class _ChatState extends State<Chat> {
                   .size
                   .width,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                color: Color(0x54FFFFFF),
+                padding: EdgeInsets.symmetric(horizontal: 9, vertical: 9),
+                color: Colors.black,
                 child: Row(
                   children: [
                     Expanded(
@@ -111,11 +111,11 @@ class _ChatState extends State<Chat> {
                                   begin: FractionalOffset.topLeft,
                                   end: FractionalOffset.bottomRight
                               ),
-                              borderRadius: BorderRadius.circular(40)
+                              borderRadius: BorderRadius.circular(50)
                           ),
                           padding: EdgeInsets.all(12),
                           child: Image.asset("assets/images/send.png",
-                            height: 25, width: 25,)),
+                            height: 30, width: 30,)),
                     ),
                   ],
                 ),
