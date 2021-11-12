@@ -18,10 +18,12 @@ class DatabaseMethods {
   }
 
   searchByName(String searchField) {
-    return Firestore.instance
+    var usersGetByUserName = Firestore.instance
         .collection("users")
         .where('userName', isEqualTo: searchField)
         .getDocuments();
+
+    return usersGetByUserName;
   }
 
   Future<bool> addChatRoom(chatRoom, chatRoomId) {

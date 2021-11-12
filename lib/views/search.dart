@@ -1,4 +1,5 @@
 import 'package:chatapp/helper/constants.dart';
+import 'package:chatapp/helper/helperfunctions.dart';
 import 'package:chatapp/models/user.dart';
 import 'package:chatapp/services/database.dart';
 import 'package:chatapp/views/chat.dart';
@@ -26,9 +27,17 @@ class _SearchState extends State<Search> {
         isLoading = true;
       });
       await databaseMethods.searchByName(searchEditingController.text)
-          .then((snapshot){
+          .then((snapshot) async {
         searchResultSnapshot = snapshot;
-        print("$searchResultSnapshot");
+        if(searchResultSnapshot.documents.isEmpty) {
+          searchResultSnapshot = await databaseMethods.getUserInfo(searchEditingController.text);
+        }
+
+        String email = await HelperFunctions.getUserEmailSharedPreference();
+        if(searchResultSnapshot.documents.isNotEmpty &&
+            searchResultSnapshot.documents[0].data['userEmail'] == email) {
+          searchResultSnapshot = await databaseMethods.getUserInfo("********************");
+        }
         setState(() {
           isLoading = false;
           haveUserSearched = true;
@@ -73,7 +82,7 @@ class _SearchState extends State<Search> {
   Widget userTile(String userName,String userEmail){
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
+      child: Stack(
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -28,6 +28,20 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
   String error = '';
 
+  saveUserToSharePreference(QuerySnapshot userInfoSnapshot) {
+    HelperFunctions.saveUserLoggedInSharedPreference(true);
+    HelperFunctions.saveUserNameSharedPreference(
+        userInfoSnapshot.documents[0].data["userName"]);
+    HelperFunctions.saveUserEmailSharedPreference(
+        userInfoSnapshot.documents[0].data["userEmail"]);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => ChatRoom()));
+  }
+
+  signInWithGoogle() async {
+    await authService.signInWithGoogle(context);
+  }
+
   signIn() async {
     bool isOk = false;
     if (formKey.currentState.validate()) {
@@ -43,17 +57,10 @@ class _SignInState extends State<SignIn> {
           QuerySnapshot userInfoSnapshot =
               await DatabaseMethods().getUserInfo(emailEditingController.text);
 
-          HelperFunctions.saveUserLoggedInSharedPreference(true);
-          HelperFunctions.saveUserNameSharedPreference(
-              userInfoSnapshot.documents[0].data["userName"]);
-          HelperFunctions.saveUserEmailSharedPreference(
-              userInfoSnapshot.documents[0].data["userEmail"]);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+          saveUserToSharePreference(userInfoSnapshot);
         } else {
           setState(() {
             isLoading = false;
-            //show snackbar
           });
           error = 'Your credential is not correct or email is not verify';
           return false;
@@ -150,6 +157,31 @@ class _SignInState extends State<SignIn> {
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         "Sign In",
+                        style: biggerTextStyle(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      signInWithGoogle();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: LinearGradient(
+                            colors: [
+                              const Color(0xff5ef400),
+                              const Color(0xff2A75BC)
+                            ],
+                          )),
+                      width: MediaQuery.of(context).size.width,
+                      child: Text(
+                        "Sign In With Google",
                         style: biggerTextStyle(),
                         textAlign: TextAlign.center,
                       ),

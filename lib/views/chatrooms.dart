@@ -25,6 +25,7 @@ class _ChatRoomState extends State<ChatRoom> {
                 itemCount: snapshot.data.documents.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  print(index);
                   return ChatRoomsTile(
                     userName: snapshot.data.documents[index].data['chatRoomId']
                         .toString()
@@ -46,6 +47,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   getUserInfogetChats() async {
     Constants.myName = await HelperFunctions.getUserNameSharedPreference();
+
     DatabaseMethods().getUserChats(Constants.myName).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
@@ -60,7 +62,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return Scaffold(
       appBar: AppBar(
         title: Image.asset(
-          "assets/images/logo.png",
+          "assets/images/logo2.png",
           height: 40,
         ),
         elevation: 0.0,

@@ -6,6 +6,7 @@ import 'package:chatapp/views/chatrooms.dart';
 import 'package:chatapp/views/signin.dart';
 import 'package:chatapp/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUp extends StatefulWidget {
   final Function toggleView;
@@ -31,30 +32,32 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         isLoading = true;
       });
-
-      await authService
+      var result = await authService
           .signUpWithEmailAndPassword(
-              emailEditingController.text, passwordEditingController.text)
-          .then((result) {
-        if (result != null) {
-          Map<String, String> userDataMap = {
-            "userName": usernameEditingController.text,
-            "userEmail": emailEditingController.text
-          };
+          emailEditingController.text, passwordEditingController.text);
+      if (result != null) {
+        Map<String, String> userDataMap = {
+          "userName": usernameEditingController.text,
+          "userEmail": emailEditingController.text,
+          "uid": ""
+        };
 
-          databaseMethods.addUserInfo(userDataMap);
+        databaseMethods.addUserInfo(userDataMap);
 
-          HelperFunctions.saveUserLoggedInSharedPreference(true);
-          HelperFunctions.saveUserNameSharedPreference(
-              usernameEditingController.text);
-          HelperFunctions.saveUserEmailSharedPreference(
-              emailEditingController.text);
+        HelperFunctions.saveUserLoggedInSharedPreference(true);
+        HelperFunctions.saveUserNameSharedPreference(
+            usernameEditingController.text);
+        HelperFunctions.saveUserEmailSharedPreference(
+            emailEditingController.text);
 
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SignIn(widget.toggleView)));
-        }
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SignIn(widget.toggleView)));
+        return;
+      }
+      setState(() {
+        isLoading = false;
       });
     }
   }

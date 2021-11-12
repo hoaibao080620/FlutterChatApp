@@ -1,6 +1,8 @@
 import 'package:chatapp/services/auth.dart';
 import 'package:chatapp/widget/widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -13,9 +15,34 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   AuthService authService = new AuthService();
   resetPassword() async {
       if(formKey.currentState.validate()) {
-        await authService
-            .resetPass(emailEditingController.text)
-            .then((value) => Navigator.of(context).pop());
+        try {
+          await authService
+              .resetPass(emailEditingController.text)
+              .then((value) {
+            Fluttertoast.showToast(
+                msg: "Please check your email to reset pass!",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 3,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+            Navigator.of(context).pop();
+          }
+          );
+        }
+        on PlatformException catch(e) {
+          Fluttertoast.showToast(
+              msg: e.message,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 3,
+              backgroundColor: Colors.redAccent,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        }
       }
   }
 
